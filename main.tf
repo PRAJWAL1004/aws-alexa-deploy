@@ -36,11 +36,7 @@ resource "aws_instance" "tfvm" {
 resource "aws_security_group" "alexa" {
   name = join("-",["alexa-aws-sg",tostring(timestamp())])
 }
-provider "aws" {
-  region = "us-east-1"
-  access_key = ""
-  secret_key = ""
-}
+
 resource "aws_instance" "tfvm" {
   ami = "ami-0885b1f6bd170450c"
   instance_type = "t2.micro"
