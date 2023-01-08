@@ -1,0 +1,75 @@
+name: Terraform AWS Deploy Workflow
+
+on:
+  workflow_dispatch:
+  #   # Inputs the workflow accepts.
+  #   inputs:
+  #     tfpath:
+  #       description: 'TF File Path'     
+  #       required: false
+  #       default: '/'
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+
+jobs:
+  tf_code_check_and_deploy:
+    name: Terraform Validation, Build and Deploy
+    runs-on: ubuntu-latest
+
+    # if:  ${{ inputs.tfpath }} 
+    steps:
+    - name: Slack message running workflow
+      run: |
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"Running deploy workflow....."}' https://hooks.slack.com/services/T04GFRQ8J1L/${{secrets.SLACK_BOT_TOKEN}}    
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v3
+      with:
+        # Semantic version range syntax or exact version of a Python version
+        python-version: '3.9'
+        # Optional - x64 or x86 architecture, defaults to x64
+        architecture: 'x64'
+
+    - name: Configure AWS Credentials Action For GitHub Actions
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2 
+
+    - name: Setup Terraform CLI
+      uses: hashicorp/setup-terraform@v2.0.2
+
+    - name: Terraform init 
+      run: |
+        echo `pwd`
+        echo "tfpath ${{ github.event.inputs.tfpath }}"
+        echo "** Running Terraform Init**"
+        terraform init -upgrade      
+
+    - name: Slack message Starting deployment
+      run: |
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"Starting deployment....."}' https://hooks.slack.com/services/T04GFRQ8J1L/${{secrets.SLACK_BOT_TOKEN}}    
+          
+    - name: Terraform plan
+      run: |
+        echo "** Running Terraform Validate**"
+        terraform validate
+        
+        echo "** Running Terraform Plan**"
+        terraform plan
+
+    - name: Slack message Deployment Started
+      run: |
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"Deployment Started."}' https://hooks.slack.com/services/T04GFRQ8J1L/${{secrets.SLACK_BOT_TOKEN}}    
+        echo "** Running Terraform Apply**"
+        terraform apply -auto-approve
+      # working-directory: ${{ github.event.inputs.tfpath }}
+
+    - name: Slack message Your VM is ready
+      run: |
+        curl -X POST -H 'Content-type: application/json' --data '{"text":"Your VM is ready!"}' https://hooks.slack.com/services/T04GFRQ8J1L/${{secrets.SLACK_BOT_TOKEN}}
+
+
+
