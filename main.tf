@@ -18,19 +18,12 @@ provider "aws" {
   # access_key = ""
   # secret_key = ""
 }
-resource "aws_vpc" "my_alexa_vpc" {
-  cidr_block = "172.16.0.0/16"
 
-  tags = {
-    Name = "tf-example"
-  }
-}
 resource "aws_instance" "tfvm" {
   ami = "ami-0885b1f6bd170450c"
   instance_type = "t2.micro"
   # vpc_security_group_ids = [ aws_security_group.alexa.id ]
   security_groups = ["${aws_security_group.alexa.name}"]
-  vpc_id = "${aws_vpc.my_alexa_vpc.id}"
   user_data = <<-EOF
                 #!/bin/bash
                 echo "You are inside a VM deployed by Alexa" > index.html
@@ -42,7 +35,6 @@ resource "aws_instance" "tfvm" {
 }
 resource "aws_security_group" "alexa" {
   name = join("-",["alexa-aws-sg",tostring(timestamp())])
-  vpc_id = "${aws_vpc.my_alexa_vpc.id}"
 }
 
   # lifecycle {
