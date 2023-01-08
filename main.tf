@@ -18,7 +18,13 @@ provider "aws" {
   # access_key = ""
   # secret_key = ""
 }
+resource "aws_vpc" "my_alexa_vpc" {
+  cidr_block = "172.16.0.0/16"
 
+  tags = {
+    Name = "tf-example"
+  }
+}
 resource "aws_instance" "tfvm" {
   ami = "ami-0885b1f6bd170450c"
   instance_type = "t2.micro"
