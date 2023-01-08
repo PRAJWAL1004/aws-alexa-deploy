@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 terraform {
   required_providers {
     aws = {
@@ -36,7 +35,7 @@ resource "aws_instance" "tfvm" {
 }
 resource "aws_security_group" "alexa" {
   name = join("-",["alexa-aws-sg",tostring(timestamp())])
-=======
+}
 provider "aws" {
   region = "us-east-1"
   access_key = ""
@@ -57,27 +56,20 @@ resource "aws_instance" "tfvm" {
 }
 resource "aws_security_group" "websg" {
   name = "web-sg01"
->>>>>>> 2c3f070 (test)
   ingress {
     protocol = "tcp"
     from_port = 8080
     to_port = 8080
     cidr_blocks = [ "0.0.0.0/0" ]
   }
-<<<<<<< HEAD
+
   lifecycle {
     # Necessary if changing 'name' or 'name_prefix' properties.
     create_before_destroy = true
   }
-=======
->>>>>>> 2c3f070 (test)
+
 }
 output "instance_ips" {
   value = aws_instance.tfvm.public_ip
 }
 
-<<<<<<< HEAD
-#testing
-=======
-#testing
->>>>>>> 2c3f070 (test)
