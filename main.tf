@@ -41,7 +41,7 @@ resource "aws_instance" "tfvm" {
 }
 resource "aws_security_group" "alexa" {
   name = join("-",["alexa-aws-sg",tostring(timestamp())])
-  vpc_id = ["${aws_vpc.my_alexa_vpc}"]
+  vpc_id = "${aws_vpc.my_alexa_vpc.id}"
 }
 
   # lifecycle {
