@@ -1,2 +1,2 @@
 # alexa-aws-deploy
-# aws-alexa-deploy
+![aws-alex-deploy-arch-diagram](alexa-aws-deploy.drawio.png)
